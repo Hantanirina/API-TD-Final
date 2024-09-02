@@ -1,0 +1,217 @@
+openapi: 3.0.0  
+info:  
+  title: Football Compitition API  
+  version: 1.0.0  
+
+servers:  
+  - url: https://localhost.STD23107-TD-Final.com
+
+paths:  
+  /competitions:  
+    get:  
+      summary: Get list of competions  
+      parameters:  
+        - name: page  
+          in: query  
+          required: true  
+          schema:  
+            type: integer  
+        - name: pageSize  
+          in: query  
+          required: true  
+          schema:  
+            type: integer  
+      responses:  
+        '200':  
+          description: A list of competions  
+          content:  
+            application/json:  
+              schema:  
+                type: object  
+                properties:  
+                  competions:  
+                    type: array  
+                    items:  
+                      $ref: '#/components/schemas/Competition'  
+      
+    post:  
+      summary: Create new competion  
+      requestBody:  
+        required: true  
+        content:  
+          application/json:  
+            schema:  
+              $ref: '#/components/schemas/Competition'  
+      responses:  
+        '201':  
+          description: Competion created succesfully  
+          
+  /teams:  
+    get:  
+      summary: Get list of teams  
+      parameters:  
+        - name: teamName  
+          in: query  
+          required: false  
+          schema:  
+            type: string  
+            description: Name of team to filter results.  
+        - name: page  
+          in: query  
+          required: true  
+          schema:  
+            type: integer  
+        - name: pageSize  
+          in: query  
+          required: true  
+          schema:  
+            type: integer  
+      responses:  
+        '200':  
+          description: A list of teams  
+          content:  
+            application/json:  
+              schema:  
+                type: object  
+                properties:  
+                  teams:  
+                    type: array  
+                    items:  
+                      $ref: '#/components/schemas/Team'  
+
+    post:  
+      summary: Create new team  
+      requestBody:  
+        required: true  
+        content:  
+          application/json:  
+            schema:  
+              $ref: '#/components/schemas/TeamCreate'  
+      responses:  
+        '201':  
+          description: Team created succesfully  
+
+/teams/{teamId}/players:  
+  get:  
+    summary: Get players of a specific team  
+    parameters:  
+      - name: teamId  
+        in: path  
+        required: true  
+        schema:  
+          type: string  
+      - name: playerName  
+        in: query  
+        required: true  
+        schema:  
+          type: string  
+          description: Name of the player to filter results.  
+      - name: page  
+        in: query  
+        required: true  
+        schema:  
+          type: integer  
+      - name: pageSize  
+        in: query  
+        required: true  
+        schema:  
+          type: integer  
+    responses:  
+      '200':  
+        description: A list of players  
+        content:  
+          application/json:  
+            schema:  
+              type: object  
+              properties:  
+                players:  
+                  type: array  
+                  items:  
+                    $ref: '#/components/schemas/Player'  
+
+  post:  
+    summary: Add players to a specific team  
+    parameters:  
+      - name: teamId  
+        in: path  
+        required: true  
+        schema:  
+          type: string  
+    requestBody:  
+      required: true  
+      content:  
+        application/json:  
+          schema:  
+            type: array  
+            items:  
+              type: object  
+              properties:  
+                name:  
+                  type: string  
+                  description: Name of the player  
+                number:  
+                  type: integer  
+                  description: Player's number  
+                strongFoot:  
+                  type: string  
+                  enum: [Left, Right]  
+                  description: Player's strong foot (Left or Right)  
+    responses:  
+      '200':  
+        description: Players added successfully
+components:  
+  schemas:  
+    Competition:  
+      type: object  
+      properties:  
+        name:  
+          type: string  
+        location:  
+          type: string  
+
+    Team:  
+      type: object  
+      properties:  
+        name:  
+          type: string  
+        slogan:  
+          type: string  
+        competions:  
+          type: array  
+          items:  
+            type: string  
+        players:  
+          type: array  
+          items:  
+            $ref: '#/components/schemas/Player'  
+
+    TeamCreate:  
+      type: object  
+      properties:  
+        name:  
+          type: string  
+        slogan:  
+          type: string  
+
+    Player:  
+      type: object  
+      properties:  
+        name:  
+          type: string  
+        number:  
+          type: integer  
+        strongFoot:  
+          type: string  
+          enum: [Left, Right]  
+
+    PlayerCreate:  
+      type: object  
+      properties:  
+        name:  
+          type: string
+        number:  
+          type: integer  
+        strongFoot:  
+          type: string  
+          enum: [Left, Right]  
+          example: "Left"
